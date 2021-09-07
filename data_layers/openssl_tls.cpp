@@ -2,14 +2,14 @@
 #ifdef WIN32
 	#include <Windows.h>
 	#include <wincrypt.h>
+	#include <openssl/applink.c>
 #endif
 
 #include <cassert>
 #include <iostream>
 #include <openssl/ssl.h>
-//#include <openssl/applink.c>
 #include <openssl/bio.h>
-#include "openssl_tls.h"
+#include "data_layers/openssl_tls.h"
 
 using namespace std;
 

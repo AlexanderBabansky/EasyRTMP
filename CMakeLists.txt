@@ -10,10 +10,6 @@ option(USE_OPENSSL "Enable OpenSSL" OFF)
 
 set (SOURCES amf.cpp framework.cpp rtmp_endpoint.cpp rtmp_exception.cpp rtmp_proto.cpp rtmp_server_session.cpp data_layers/tcp_network.cpp)
 
-if (NOT WIN32)
-	add_definitions("-g")
-endif()
-
 if (${USE_OPENSSL})
 	find_package(OpenSSL REQUIRED COMPONENTS SSL)
 	set(LIBS ${LIBS} OpenSSL::SSL)
