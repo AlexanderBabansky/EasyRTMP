@@ -1,8 +1,8 @@
 # EasyRTMP
  Lightweight RTMP client/server library
 
- ## About RTMP
- This is old standard, originally developed in 2003 as a proprietary protocol
+## About RTMP
+This is old standard, originally developed in 2003 as a proprietary protocol
 for streaming between a *Flash player* and a server. In 2012 *Adobe* released
 [specification](https://www.adobe.com/devnet/rtmp.html). Protocol is designed
 to stream low latency realtime data. Today, when Flash is dead,
@@ -83,5 +83,4 @@ try{
 Examples are available in next products: RTMP2NDI
 
 ## Acknowledgements
-* [cxxopts](https://github.com/jarro2783/cxxopts) by jarro2783
-* [OpenSSL](https://www.openssl.org/)
+* [OpenSSL](https://www.openssl.org)
