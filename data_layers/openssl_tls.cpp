@@ -6,7 +6,6 @@
 #endif
 
 #include <cassert>
-#include <iostream>
 #include <openssl/ssl.h>
 #include <openssl/bio.h>
 #include "data_layers/openssl_tls.h"

@@ -58,7 +58,7 @@ RTMPMediaMessage RTMPServerSession::GetRTMPMessage() {
 	}
 }
 
-const ClientParameters* RTMPServerSession::GetClientParameters() {
+ClientParameters* RTMPServerSession::GetClientParameters() {
 	return &m_ClientParameters;
 }
 
@@ -119,6 +119,7 @@ void RTMPServerSession::HandleAMF(AMFValue data) {
 		amf_result.push_back(obj1);
 		amf_result.push_back(obj2);
 		SendAMFResult(move(amf_result), cmd_id);
+		return;
 	}
 	else if (cmd_name == "createStream") {
 		AMFValue nll(AMFType::NUL);
@@ -127,6 +128,7 @@ void RTMPServerSession::HandleAMF(AMFValue data) {
 		amf_result.push_back(nll);
 		amf_result.push_back(num);
 		SendAMFResult(move(amf_result), cmd_id);
+		return;
 	}
 	else if (cmd_name == "publish") {
 		++it;
@@ -151,9 +153,13 @@ void RTMPServerSession::HandleAMF(AMFValue data) {
 		amf_container.push_back(nl);
 		amf_container.push_back(obj1);
 		m_Endpoint->SendCommand(amf_container, 3, 1);
+		return;
 	}
-	else if (cmd_name == "@setDataFrame") {
+	else if (cmd_name == "@setDataFrame") {		
+		cmd_name = (*it).get_string();
 		++it;
+	}
+	if (cmd_name=="onMetaData") {
 		auto obj = *it;
 		try {
 			m_ClientParameters.width = obj.at("width").get_number();
@@ -199,7 +205,7 @@ void RTMPServerSession::HandleAMF(AMFValue data) {
 				}
 			}
 			bool stereo = false;
-			m_ClientParameters.samplerate = obj.at("audiosamplerate").get_number();
+			OPTIONAL_META(m_ClientParameters.samplerate = obj.at("audiosamplerate").get_number());			
 			OPTIONAL_META(stereo = obj.at("stereo").get_boolean());
 			if (stereo) {
 				m_ClientParameters.channels = 2;
@@ -207,10 +213,10 @@ void RTMPServerSession::HandleAMF(AMFValue data) {
 			OPTIONAL_META(m_ClientParameters.channels = obj.at("audiochannels").get_number());
 			OPTIONAL_META(m_ClientParameters.audio_datarate = obj.at("audiodatarate").get_number());
 			OPTIONAL_META(m_ClientParameters.samplesize = obj.at("audiosamplesize").get_number());
-			if (!m_ClientParameters.channels)m_ClientParameters.channels = 2;
 			m_ClientParameters.has_audio = true;
 		}
 		catch (exception& e) { m_ClientParameters.has_audio = false; }
+		return;
 	}
 }
 

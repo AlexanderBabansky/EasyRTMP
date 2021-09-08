@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "amf.h"
 #include "rtmp_enums.h"
+#include "rtmp_proto.h"
 
 namespace librtmp {
 	enum class RTMPMessageType {
@@ -19,6 +20,17 @@ namespace librtmp {
 		VIDEO = 9,
 		USER_CONTROL_MESSAGE = 4,
 		UNKNOWN = 100
+	};
+
+	/**
+	* Media message from RTMP streamer
+	*/
+	struct RTMPMediaMessage {
+		RTMPMessageType message_type = RTMPMessageType::UNKNOWN;/**< Only AUDIO or VIDEO types available*/
+		uint32_t message_stream_id = 0;/**< Id of the stream. RTMP session can transfer many audio/video streams simultaneously, but it is rarely implemented*/
+		uint64_t timestamp = 0;/**< Timestamp of packet, for audio is presentation timestamp, for video - decoding timestamp*/
+		rtmp_proto::AudioPacketAAC audio;/**< Audio packet. Is only valid, if message_type is AUDIO*/
+		rtmp_proto::VideoPacket video;/**< Video packet. Is only valid, if message_type is VIDEO*/
 	};
 
 	struct ChunkStream {

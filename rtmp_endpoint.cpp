@@ -2,7 +2,6 @@
 #include <cassert>
 #include <mutex>
 #include "rtmp_endpoint.h"
-#include "rtmp_proto.h"
 #include "rtmp_exception.h"
 
 

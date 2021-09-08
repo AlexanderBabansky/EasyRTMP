@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(USE_OPENSSL "Enable OpenSSL" OFF)
 
-set (SOURCES amf.cpp framework.cpp rtmp_endpoint.cpp rtmp_exception.cpp rtmp_proto.cpp rtmp_server_session.cpp data_layers/tcp_network.cpp)
+set (SOURCES amf.cpp framework.cpp rtmp_endpoint.cpp rtmp_exception.cpp rtmp_proto.cpp rtmp_server_session.cpp rtmp_client_session.cpp utils.cpp data_layers/tcp_network.cpp)
 
 if (${USE_OPENSSL})
 	find_package(OpenSSL REQUIRED COMPONENTS SSL)
