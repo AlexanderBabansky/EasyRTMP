@@ -1,8 +1,35 @@
 #include <cassert>
 #include "rtmp_client_session.h"
+#include "rtmp_exception.h"
 
 using namespace librtmp;
 using namespace std;
+
+bool RTMPClientSession::GetCommandResponse(std::function<bool(AMFValue)> clb, int cmd_id)
+{
+	while (true) {
+		RTMPMessageType message_type = RTMPMessageType::UNKNOWN;
+		uint32_t message_stream_id = 0;
+		uint32_t message_length = 0;
+		uint64_t timestamp = 0;
+		uint8_t chunk_stream_id = 0;
+		auto data = m_Endpoint->GetRTMPMessage(&message_type, &message_stream_id, &message_length, &chunk_stream_id, &timestamp);
+		if (message_type == RTMPMessageType::AMF0) {
+			AMFValue amf_container(AMFType::ROOT);
+			const char* p = data.data();
+			int ml = message_length;
+			amf_container.ParseRef(p, ml);
+			auto it = amf_container.begin();
+			++it;
+			if ((*it).get_number() == cmd_id) {				
+				return clb(amf_container);
+			}
+		}
+		else
+			m_Endpoint->HandleMessage(move(data), message_type, message_stream_id, message_length, chunk_stream_id, timestamp);
+	}
+	return false;
+}
 
 void RTMPClientSession::SendAmfConnect(string app, string url)
 {
@@ -31,7 +58,19 @@ void RTMPClientSession::SendAmfConnect(string app, string url)
 	amf_container.push_back(amf_cmd_name);
 	amf_container.push_back(amf_transaction_id);
 	amf_container.push_back(amf_object);
-	m_Endpoint->SendCommand(amf_container);	
+	m_Endpoint->SendCommand(amf_container);
+	if (GetCommandResponse([&](AMFValue v) {
+		auto it = v.begin();
+		if ((*it).get_string() == "_result") {
+			++it; ++it; ++it;
+			if ((*it)["code"].get_string() == "NetConnection.Connect.Success") {
+				return true;
+			}
+		}
+		return false;
+		}, 1)==false) {
+			throw rtmp_exception(RTMPError::NETSTREAM_CONNECTION);
+	}
 }
 
 void RTMPClientSession::SendReleaseStream(string key)
@@ -53,6 +92,34 @@ void RTMPClientSession::SendReleaseStream(string key)
 	m_Endpoint->SendCommand(amf_container);
 }
 
+void RTMPClientSession::SendFCPublish(std::string key)
+{
+	AMFValue amf_container(AMFType::ROOT);
+	AMFValue amf_cmd(AMFType::STRING);
+	amf_cmd.set_string("FCPublish");
+	AMFValue amf_id(AMFType::NUMBER);
+	amf_id.set_number(3);
+	AMFValue amf_null(AMFType::NUL);
+	AMFValue amf_key(AMFType::STRING);
+	amf_key.set_string(key);
+
+	amf_container.push_back(amf_cmd);
+	amf_container.push_back(amf_id);
+	amf_container.push_back(amf_null);
+	amf_container.push_back(amf_key);
+
+	m_Endpoint->SendCommand(amf_container);
+	/*if (GetCommandResponse([&](AMFValue v) {
+		auto it = v.begin();
+		if ((*it).get_string() == "onFCPublish") {
+			return true;
+		}
+		return false;
+		}, 0) == false) {
+		throw rtmp_exception(RTMPError::NETSTREAM_CONNECTION);
+	}*/
+}
+
 void RTMPClientSession::SendCreateStream()
 {
 	AMFValue amf_container(AMFType::ROOT);
@@ -67,6 +134,15 @@ void RTMPClientSession::SendCreateStream()
 	amf_container.push_back(amf_null);
 
 	m_Endpoint->SendCommand(amf_container);
+	if (GetCommandResponse([&](AMFValue v) {
+		auto it = v.begin();
+		if ((*it).get_string() == "_result") {
+			return true;
+		}
+		return false;
+		}, 4) == false) {
+		throw rtmp_exception(RTMPError::NETSTREAM_CONNECTION);
+	}
 }
 
 void RTMPClientSession::SendPublish(string key)
@@ -88,7 +164,19 @@ void RTMPClientSession::SendPublish(string key)
 	amf_container.push_back(amf_key);
 	amf_container.push_back(amf_live);
 
-	m_Endpoint->SendCommand(amf_container);
+	m_Endpoint->SendCommand(amf_container,4,1);
+	if (GetCommandResponse([&](AMFValue v) {
+		auto it = v.begin();
+		if ((*it).get_string() == "onStatus") {
+			++it; ++it; ++it;
+			if ((*it)["code"].get_string() == "NetStream.Publish.Start") {
+				return true;
+			}
+		}
+		return false;
+		}, 0) == false) {
+		throw rtmp_exception(RTMPError::NETSTREAM_CONNECTION);
+	}
 }
 
 void RTMPClientSession::SendDataFrameParameters(const ClientParameters* params)
@@ -150,8 +238,7 @@ void RTMPClientSession::SendDataFrameParameters(const ClientParameters* params)
 RTMPClientSession::RTMPClientSession(RTMPEndpoint* endpoint):
 	m_Endpoint(endpoint)
 {
-	assert(endpoint);
-	
+	assert(endpoint);	
 }
 
 void RTMPClientSession::SendRTMPMessage(RTMPMediaMessage message)
@@ -161,20 +248,20 @@ void RTMPClientSession::SendRTMPMessage(RTMPMediaMessage message)
 		m_Endpoint->SendRTMPMessage(&message.audio, 4, message.message_stream_id,message.message_type,message.timestamp);
 	}
 	else if (message.message_type == RTMPMessageType::VIDEO) {
-		m_Endpoint->SendRTMPMessage(&message.video, 5, message.message_stream_id, message.message_type, message.timestamp);
+		m_Endpoint->SendRTMPMessage(&message.video, 4, message.message_stream_id, message.message_type, message.timestamp);
 	}
 	else assert(false);
 }
 
 void RTMPClientSession::SendClientParameters(const ClientParameters* params)
 {
+	//TODO: check responses
 	assert(params);
 	SendAmfConnect(params->app,params->url);
 	SendReleaseStream(params->key);
+	SendFCPublish(params->key);
 	SendCreateStream();
 	SendPublish(params->key);
 	SendDataFrameParameters(params);
 	sent_params = true;
 }
-
-

@@ -1,8 +1,11 @@
-﻿#ifdef USE_OPENSSL
+﻿#include <string>
+#ifdef USE_OPENSSL
 #ifdef WIN32
 	#include <Windows.h>
 	#include <wincrypt.h>
 	#include <openssl/applink.c>
+#else
+#include "dirent.h"
 #endif
 
 #include <cassert>
@@ -175,31 +178,42 @@ inline void InitSSL(SSL_CTX* ctx, SSL** m_SSL) {
 }
 
 inline void LoadServerCert(const char* certificate_filepath, const char* private_key_filepath, X509** m_Cert, EVP_PKEY** m_PrivateKey) {
+	FILE* cert_file = 0;
+	FILE* key_file = 0;
+
 #ifdef WIN32
 	wchar_t certificate_filepath_w[500];
 	mbstowcs(certificate_filepath_w, certificate_filepath, 500);
-	FILE* cert_file = 0;
-	if (_wfopen_s(&cert_file, certificate_filepath_w, L"r")) {
+	if (_wfopen_s(&cert_file, certificate_filepath_w, L"r"))
 		throw OpenSSLException(OpenSSLError::FILE_OPEN);
-	}
+#else
+	cert_file = fopen(certificate_filepath, "r");
+	if (!cert_file)
+		throw OpenSSLException(OpenSSLError::FILE_OPEN);
+#endif
+
 	*m_Cert = PEM_read_X509(cert_file, 0, 0, 0);
 	fclose(cert_file);
 	if (!*m_Cert) {
 		throw OpenSSLException(OpenSSLError::PEM_READ);
 	}
 
+#ifdef WIN32
 	wchar_t private_key_filepath_w[500];
 	mbstowcs(private_key_filepath_w, private_key_filepath, 500);
-	FILE* key_file = 0;
-	if (_wfopen_s(&key_file, private_key_filepath_w, L"r")) {
+	if (_wfopen_s(&key_file, private_key_filepath_w, L"r"))
 		throw OpenSSLException(OpenSSLError::FILE_OPEN);
-	}
+#else
+	key_file = fopen(private_key_filepath, "r");
+	if (!key_file)
+		throw OpenSSLException(OpenSSLError::FILE_OPEN);
+#endif	
+	
 	*m_PrivateKey = PEM_read_PrivateKey(key_file, 0, 0, 0);
 	fclose(key_file);
 	if (!*m_PrivateKey) {
 		throw OpenSSLException(OpenSSLError::PEM_READ);
 	}
-#endif // WIN32
 }
 
 shared_ptr<OpenSSL_TLS> OpenSSL_TLS_Server::handshake(DataLayer* lower_l, const char* certificate_filepath, const char* private_key_filepath)
@@ -233,9 +247,9 @@ shared_ptr<OpenSSL_TLS> OpenSSL_TLS_Server::handshake(DataLayer* lower_l, const 
 	return make_shared<OpenSSL_TLS>(ssl_copy,meth_copy,bio_copy);
 }
 
-
 void OpenSSL_TLS_Client::LoadTrustedCerts()
 {
+	auto ossl_cert_store = SSL_CTX_get_cert_store(ctx);
 #ifdef WIN32
 	HCERTSTORE hCertStore = nullptr;
 	PCCERT_CONTEXT pCertContext = NULL;
@@ -248,8 +262,7 @@ void OpenSSL_TLS_Client::LoadTrustedCerts()
 	);
 	if (!hCertStore) {
 		throw OpenSSLException(OpenSSLError::SYSTEM_CERT_STORE);
-	}
-	auto ossl_cert_store = SSL_CTX_get_cert_store(ctx);
+	}	
 	while (pCertContext = CertEnumCertificatesInStore(hCertStore, pCertContext)) {
 		if (pCertContext->dwCertEncodingType != X509_ASN_ENCODING)continue;
 		BIO* mem = BIO_new_mem_buf(pCertContext->pbCertEncoded, pCertContext->cbCertEncoded);
@@ -260,8 +273,29 @@ void OpenSSL_TLS_Client::LoadTrustedCerts()
 	}
 	CertFreeCertificateContext(pCertContext);
 	CertCloseStore(hCertStore, 0);
-#endif // WIN32
 
+	{			
+	}
+#else
+	DIR* dir;
+	struct dirent* ent;
+	string path_prefix = "/etc/ssl/certs";
+	dir = opendir(path_prefix.c_str());		
+	if (!dir) {
+		return;
+	}
+	while ((ent = readdir(dir)) != NULL) {
+		if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)continue;
+		string cert_path = path_prefix + "/" + ent->d_name;
+		FILE* fp = nullptr;
+		fp = fopen(cert_path.c_str(), "r");
+		if (!fp)continue;
+		X509* x = PEM_read_X509(fp, 0, 0, 0);
+		fclose(fp);
+		X509_STORE_add_cert(ossl_cert_store, x);
+		X509_free(x);
+	}
+#endif // WIN32
 }
 
 void OpenSSL_TLS_Client::cleanup()

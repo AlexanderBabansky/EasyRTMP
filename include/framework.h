@@ -32,15 +32,21 @@ void ReadDataType(T* out, const char*& data, int& data_len, int new_size = sizeo
 	if (data_len < new_size) {
 		throw std::runtime_error(0);//TODO: better exception
 	}
-	memcpy((char*)(out)+(sizeof(T) - new_size), data, new_size);
-	data += new_size;
-	data_len -= new_size;
 	bool convert_endian = false;
 #ifndef HOST_BIG_ENDIAN
 	if (!little_endian)convert_endian = true;
 #else
 	if (little_endian)convert_endian = true;
 #endif // !BIG_ENDIAN
+	if (convert_endian) {
+		memcpy((char*)(out)+(sizeof(T) - new_size), data, new_size);
+	}
+	else {
+		memcpy((char*)(out), data, new_size);
+	}
+	data += new_size;
+	data_len -= new_size;
+
 	if (convert_endian) {
 		if (sizeof(T) == 2) {
 			*out = _ntohs<T>(*out);

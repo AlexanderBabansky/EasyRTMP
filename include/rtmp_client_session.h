@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "rtmp_endpoint.h"
 #include "rtmp_proto.h"
+#include <functional>
 
 namespace librtmp {
 	
@@ -12,8 +13,10 @@ namespace librtmp {
 		RTMPEndpoint* m_Endpoint;
 		bool sent_params = false;
 
+		bool GetCommandResponse(std::function<bool(AMFValue)> clb, int cmd_id);
 		void SendAmfConnect(std::string app, std::string url);
 		void SendReleaseStream(std::string key);
+		void SendFCPublish(std::string key);
 		void SendCreateStream();
 		void SendPublish(std::string key);
 		void SendDataFrameParameters(const ClientParameters* params);

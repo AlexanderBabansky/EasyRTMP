@@ -136,7 +136,7 @@ namespace rtmp_proto {
 		}d;
 #pragma pack(pop)
 		uint8_t aac_packet_type = 0;/**< Packet type. Is only valid for compressed audio. If 0 - packets contains headers to initialize decoder, if 1 - audio data*/
-		DATA_BYTES audio_data_send;/**< Audio data*/
+		DATA_BYTES audio_data_send;/**< Audio payload*/
 
 		void Serialize(char*& data) const override;
 		void ParseRef(const char*& data, int& data_len) override;
@@ -157,7 +157,7 @@ namespace rtmp_proto {
 				PTS = DTS + composition_time, where DTS is RTMP packet timestamp*/
 		}d;
 #pragma pack(pop)
-		DATA_BYTES video_data_send;
+		DATA_BYTES video_data_send;/**< Video payload*/
 
 		void Serialize(char*& data) const override;
 		void ParseRef(const char*& data, int& data_len) override;
