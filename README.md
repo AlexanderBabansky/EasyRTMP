@@ -80,7 +80,7 @@ try{
 ```
 
 ## Other examples
-Examples are available in next products: RTMP2NDI
+Examples are available in next products: [RTMP2NDI](https://github.com/AlexanderBabansky/RTMP2NDI), [RTMP-Restreamer](https://github.com/AlexanderBabansky/RTMP-Restreamer)
 
 ## Acknowledgements
 * [OpenSSL](https://www.openssl.org)
