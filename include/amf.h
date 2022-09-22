@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include "framework.h"
+#include "EasyRtmpDLLAPI.h"
 
 void OffsetParser(int o, const char *&data, int &data_len);
 void OffsetSerializer(int o, const char *&data);
@@ -29,7 +30,7 @@ enum class AMFType {
 * Is a compact binary format that is used to serialize ActionScript object graphs.
 * Allows two endpoints to communicate through the exchange of stronly typed data.
 */
-class AMFValue : public Serializable
+class EASYRTMP_DLLAPI AMFValue : public Serializable
 {
 public:
     /*
@@ -37,7 +38,7 @@ public:
 	*
 	* Valid only for types: ECMA_ARRAY, OBJECT, ROOT
 	*/
-    class iterator
+    class EASYRTMP_DLLAPI iterator
     {
     private:
         AMFType type;

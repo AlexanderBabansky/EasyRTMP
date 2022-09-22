@@ -4,6 +4,7 @@
 #include "amf.h"
 #include "rtmp_enums.h"
 #include "rtmp_proto.h"
+#include "EasyRtmpDLLAPI.h"
 
 namespace librtmp {
 enum class RTMPMessageType {
@@ -54,7 +55,7 @@ struct ChunkStream
 /**
 	* Endpoint of communicating RTMP. Used by client or server
 	*/
-class RTMPEndpoint
+class EASYRTMP_DLLAPI RTMPEndpoint
 {
 private:
     DataLayer *m_LowerLevel = nullptr;

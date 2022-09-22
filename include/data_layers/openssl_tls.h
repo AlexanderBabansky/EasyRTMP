@@ -1,7 +1,8 @@
 #pragma once
 #include <exception>
 #include <memory>
-#include "../framework.h"
+#include "framework.h"
+#include "EasyRtmpDLLAPI.h"
 
 struct ssl_st;
 struct x509_st;
@@ -31,7 +32,7 @@ public:
     char const *what() const noexcept override { return "openssl_exception"; }
 };
 
-class OpenSSL_TLS : public DataLayer
+class EASYRTMP_DLLAPI OpenSSL_TLS : public DataLayer
 {
 private:
     ssl_st *m_SSL = nullptr;
@@ -51,7 +52,7 @@ public:
     ~OpenSSL_TLS();
 };
 
-class OpenSSL_TLS_Server
+class EASYRTMP_DLLAPI OpenSSL_TLS_Server
 {
 private:
     DataLayer *m_LowerLevel = nullptr;
@@ -73,7 +74,7 @@ public:
     ~OpenSSL_TLS_Server();
 };
 
-class OpenSSL_TLS_Client
+class EASYRTMP_DLLAPI OpenSSL_TLS_Client
 {
 private:
     DataLayer *m_LowerLevel = nullptr;

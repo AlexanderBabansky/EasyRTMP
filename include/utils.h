@@ -1,4 +1,5 @@
 #include <string>
+#include "EasyRtmpDLLAPI.h"
 
 namespace librtmp {
 enum class ProtoType { RTMP, RTMPS, UNKNOWN = 100 };
@@ -10,5 +11,5 @@ struct ParsedUrl
     std::string app;
     std::string key;
 };
-ParsedUrl ParseURL(std::string url);
+ParsedUrl EASYRTMP_DLLAPI ParseURL(std::string url);
 } // namespace librtmp

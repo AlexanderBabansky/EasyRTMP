@@ -1,7 +1,8 @@
 #pragma once
 #include <exception>
 #include <memory>
-#include "../framework.h"
+#include "framework.h"
+#include "EasyRtmpDLLAPI.h"
 
 enum class TCPNetworkError {
     SENDING,
@@ -28,7 +29,7 @@ public:
     }
 };
 
-class TCPNetwork : public DataLayer
+class EASYRTMP_DLLAPI TCPNetwork : public DataLayer
 {
 private:
     unsigned int m_Socket = 0;
@@ -45,7 +46,7 @@ public:
     ~TCPNetwork();
 };
 
-class TCPServer
+class EASYRTMP_DLLAPI TCPServer
 {
 private:
     unsigned int m_Socket = 0;
@@ -59,7 +60,7 @@ public:
     ~TCPServer();
 };
 
-class TCPClient
+class EASYRTMP_DLLAPI TCPClient
 {
 private:
     void cleanup();

@@ -1,13 +1,14 @@
 #include "framework.h"
 #include "rtmp_endpoint.h"
 #include "rtmp_proto.h"
+#include "EasyRtmpDLLAPI.h"
 
 namespace librtmp {
 
 /**
 	* Media server. Contains common logic for accepting media stream
 	*/
-class RTMPServerSession
+class EASYRTMP_DLLAPI RTMPServerSession
 {
 private:
     RTMPEndpoint *m_Endpoint;

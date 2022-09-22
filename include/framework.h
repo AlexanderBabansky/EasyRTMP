@@ -2,6 +2,8 @@
 #include <vector>
 #include <stdexcept>
 #include <cstring>
+#include "EasyRtmpDLLAPI.h"
+
 #define DATA_BYTES std::vector<char>
 
 #define min(a, b) a < b ? a : b
@@ -106,7 +108,7 @@ inline void WriteDataBytes(char *&data, const void *src, int src_len)
 * 
 * Used to build multilayer data transfering, such as TLS, TCP, HTTP
 */
-class DataLayer
+class EASYRTMP_DLLAPI DataLayer
 {
 public:
     void send_data(DATA_BYTES data);
@@ -127,7 +129,7 @@ public:
 /**
 * Abstract class for binary serializable object
 */
-class Serializable
+class EASYRTMP_DLLAPI Serializable
 {
 public:
     /**

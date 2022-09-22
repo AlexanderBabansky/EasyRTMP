@@ -1,11 +1,12 @@
 #pragma once
 #include <stdint.h>
 #include "framework.h"
+#include "EasyRtmpDLLAPI.h"
 
 namespace rtmp_proto {
 
 #pragma pack(push, 1)
-struct C0 : public Serializable
+struct EASYRTMP_DLLAPI C0 : public Serializable
 {
     struct
     {
@@ -16,7 +17,7 @@ struct C0 : public Serializable
     int GetLength() const override;
 };
 
-struct C1 : public Serializable
+struct EASYRTMP_DLLAPI C1 : public Serializable
 {
     struct
     {
@@ -120,7 +121,7 @@ struct C1 : public Serializable
     int GetLength() const override;
 };
 
-struct C2 : public Serializable
+struct EASYRTMP_DLLAPI C2 : public Serializable
 {
     struct
     {
@@ -134,7 +135,7 @@ struct C2 : public Serializable
     int GetLength() const override;
 };
 
-struct ChunkBasicHeader : public Serializable
+struct EASYRTMP_DLLAPI ChunkBasicHeader : public Serializable
 {
     struct
     {
@@ -148,7 +149,7 @@ struct ChunkBasicHeader : public Serializable
 };
 #pragma pack(pop)
 
-struct ChunkMessageHeader0 : Serializable
+struct EASYRTMP_DLLAPI ChunkMessageHeader0 : Serializable
 {
     uint32_t timestamp = 0;      //3b
     uint32_t message_length = 0; //3b
@@ -160,7 +161,7 @@ struct ChunkMessageHeader0 : Serializable
     int GetLength() const override;
 };
 
-struct ChunkMessageHeader1 : Serializable
+struct EASYRTMP_DLLAPI ChunkMessageHeader1 : Serializable
 {
     uint32_t timestamp_delta = 0; //3b
     uint32_t message_length = 0;  //3b
@@ -171,7 +172,7 @@ struct ChunkMessageHeader1 : Serializable
     int GetLength() const override;
 };
 
-struct ChunkMessageHeader2 : Serializable
+struct EASYRTMP_DLLAPI ChunkMessageHeader2 : Serializable
 {
     uint32_t timestamp_delta = 0; //3b
 
@@ -179,28 +180,28 @@ struct ChunkMessageHeader2 : Serializable
     void ParseRef(const char *&data, int &data_len) override;
     int GetLength() const override;
 };
-struct SetChunkSize : Serializable
+struct EASYRTMP_DLLAPI SetChunkSize : Serializable
 {
     uint32_t chunk_size = 0; //31 bits
     void Serialize(char *&data) const override;
     void ParseRef(const char *&data, int &data_len) override;
     int GetLength() const override;
 };
-struct AbortMessage : Serializable
+struct EASYRTMP_DLLAPI AbortMessage : Serializable
 {
     uint32_t chunk_stream_id = 0;
     void Serialize(char *&data) const override;
     void ParseRef(const char *&data, int &data_len) override;
     int GetLength() const override;
 };
-struct Acknowledgement : Serializable
+struct EASYRTMP_DLLAPI Acknowledgement : Serializable
 {
     uint32_t sequence_number = 0;
     void Serialize(char *&data) const override;
     void ParseRef(const char *&data, int &data_len) override;
     int GetLength() const override;
 };
-struct WindowsAcknowledgementSize : Serializable
+struct EASYRTMP_DLLAPI WindowsAcknowledgementSize : Serializable
 {
     uint32_t acknowledgement_window_size = 0;
 
@@ -208,7 +209,7 @@ struct WindowsAcknowledgementSize : Serializable
     void ParseRef(const char *&data, int &data_len) override;
     int GetLength() const override;
 };
-struct SetPeerBandwith : Serializable
+struct EASYRTMP_DLLAPI SetPeerBandwith : Serializable
 {
     struct
     {
@@ -220,7 +221,7 @@ struct SetPeerBandwith : Serializable
     void ParseRef(const char *&data, int &data_len) override;
     int GetLength() const override;
 };
-struct UCM_StreamBegin : Serializable
+struct EASYRTMP_DLLAPI UCM_StreamBegin : Serializable
 {
     uint16_t type = 0;
     uint32_t stream_id = 0;
@@ -234,7 +235,7 @@ struct UCM_StreamBegin : Serializable
 	* Audio packet. Contains audio parameters, that is not useful, because all
 	* parameters are transfered via AMF commands
 	*/
-struct AudioPacketAAC : Serializable
+struct EASYRTMP_DLLAPI AudioPacketAAC : Serializable
 {
 #pragma pack(push, 1)
     struct
@@ -256,7 +257,7 @@ struct AudioPacketAAC : Serializable
 /**
 	* Video packet
 	*/
-struct VideoPacket : Serializable
+struct EASYRTMP_DLLAPI VideoPacket : Serializable
 {
 #pragma pack(push, 1)
     struct

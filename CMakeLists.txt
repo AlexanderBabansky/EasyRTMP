@@ -8,10 +8,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(USE_OPENSSL "Enable OpenSSL" OFF)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES})
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 target_sources(${PROJECT_NAME} PRIVATE
     amf.cpp include/amf.h
+    include/EasyRtmpDLLAPI.h
     framework.cpp include/framework.h
     rtmp_endpoint.cpp include/rtmp_endpoint.h
     rtmp_exception.cpp include/rtmp_exception.h
@@ -21,6 +22,9 @@ target_sources(${PROJECT_NAME} PRIVATE
     utils.cpp include/utils.h
     data_layers/tcp_network.cpp include/data_layers/tcp_network.h
     )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE EARYRTMP_DLL_EXPORTS)
+target_compile_definitions(${PROJECT_NAME} PUBLIC EARYRTMP_DLL)
 
 if (${USE_OPENSSL})
     find_package(OpenSSL REQUIRED COMPONENTS SSL)
