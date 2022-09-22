@@ -223,6 +223,7 @@ void AMFValue::ParseRef(const char *&data, int &data_len)
         else
             data_boolean = false;
     } break;
+    default: break;
     }
 }
 

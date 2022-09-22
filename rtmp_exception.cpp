@@ -14,6 +14,7 @@ char const *rtmp_exception::what() const noexcept
     case librtmp::RTMPError::AMF: return "amf";
     case librtmp::RTMPError::NETSTREAM_CONNECTION: return "netstream connection";
     case RTMPError::ENDPOINT_STATUS: return "endpoint status";
+    case RTMPError::INTERNAL: break;
     }
     return "librtmp error";
 }

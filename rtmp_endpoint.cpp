@@ -163,6 +163,7 @@ bool RTMPEndpoint::HandleMessage(DATA_BYTES data, RTMPMessageType message_type,
     } break;
     case RTMPMessageType::USER_CONTROL_MESSAGE: {
     } break;
+    default: break;
     }
     return true;
 }
