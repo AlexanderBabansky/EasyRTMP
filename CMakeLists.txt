@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+    cmake_minimum_required(VERSION 3.20)
 
 set(easyrtmp_VERSION 0.1)
 project(easyrtmp VERSION ${easyrtmp_VERSION})
@@ -23,8 +23,8 @@ target_sources(${PROJECT_NAME} PRIVATE
     data_layers/tcp_network.cpp include/data_layers/tcp_network.h
     )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE EARYRTMP_DLL_EXPORTS)
-target_compile_definitions(${PROJECT_NAME} PUBLIC EARYRTMP_DLL)
+target_compile_definitions(${PROJECT_NAME} PRIVATE EASYRTMP_DLL_EXPORTS)
+target_compile_definitions(${PROJECT_NAME} PUBLIC EASYRTMP_DLL)
 
 if (${USE_OPENSSL})
     find_package(OpenSSL REQUIRED COMPONENTS SSL)

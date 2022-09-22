@@ -110,6 +110,8 @@ inline void WriteDataBytes(char *&data, const void *src, int src_len)
 class EASYRTMP_DLLAPI DataLayer
 {
 public:
+    virtual ~DataLayer() = default;
+
     void send_data(DATA_BYTES data);
     DATA_BYTES receive_data(int len);
     /**
@@ -131,6 +133,7 @@ public:
 class EASYRTMP_DLLAPI Serializable
 {
 public:
+    virtual ~Serializable() = default;
     /**
 	* Serialize object to binary
 	* @param[out]	data	The allocated memory to put serialized binary. Must have size not less than GetLength() method returns.

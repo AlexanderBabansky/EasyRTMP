@@ -1,8 +1,8 @@
 #pragma once
 #include <exception>
 #include <memory>
-#include "framework.h"
-#include "EasyRtmpDLLAPI.h"
+#include "../framework.h"
+#include "../EasyRtmpDLLAPI.h"
 
 enum class TCPNetworkError {
     SENDING,
