@@ -6,7 +6,6 @@
 
 #define DATA_BYTES std::vector<char>
 
-#define min(a, b) a < b ? a : b
 template<typename T>
 T _ntohs(T t)
 {

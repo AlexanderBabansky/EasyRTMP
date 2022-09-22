@@ -118,7 +118,8 @@ DATA_BYTES RTMPEndpoint::GetRTMPMessage(RTMPMessageType *message_type,
             assert(false);
             throw rtmp_exception(RTMPError::INTERNAL);
         }
-        auto to_receive_bytes = min(cs.message_length - cs.message_bytes_read, m_ChunkSizeReceive);
+        auto to_receive_bytes = std::min(cs.message_length - cs.message_bytes_read,
+                                         size_t(m_ChunkSizeReceive));
         auto rec_data = m_LowerLevel->receive_data(to_receive_bytes);
         memcpy(cs.chunks_buffer.data() + cs.message_bytes_read, rec_data.data(), to_receive_bytes);
         cs.message_bytes_read += to_receive_bytes;
@@ -234,7 +235,7 @@ void RTMPEndpoint::SendRTMPMessage(Serializable *data, uint8_t chunk_stream_id,
             SendSerializable(&header0);
         }
 
-        int bytes_to_send = min(m_ChunkSizeSend, bb.size() - bytes_sent);
+        int bytes_to_send = std::min(size_t(m_ChunkSizeSend), bb.size() - bytes_sent);
         m_LowerLevel->send_data(bb.data() + bytes_sent, bytes_to_send);
         bytes_sent += bytes_to_send;
     }
