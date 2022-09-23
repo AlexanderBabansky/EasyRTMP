@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace librtmp {
 	enum class RTMPVideoCodec {
 		SORENSON_H263 = 2,

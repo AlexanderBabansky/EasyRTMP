@@ -285,7 +285,7 @@ AMFValue::iterator::iterator(const iterator &o)
 }
 
 AMFValue::iterator::iterator(AMFType t, std::list<AMFValue>::iterator it)
-    : list_iterator(it), type(t)
+    : type(t), list_iterator(it)
 {
     assert(type == AMFType::ECMA_ARRAY || type == AMFType::OBJECT || type == AMFType::ROOT);
 }

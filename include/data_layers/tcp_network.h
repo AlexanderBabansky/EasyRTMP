@@ -49,7 +49,7 @@ public:
 class EASYRTMP_DLLAPI TCPServer
 {
 private:
-    unsigned int m_Socket = 0;
+    int m_Socket = 0;
 
 public:
     TCPServer(uint16_t port);

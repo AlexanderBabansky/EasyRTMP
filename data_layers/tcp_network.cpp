@@ -16,13 +16,6 @@ WSADATA wsaData;
 
 using namespace std;
 
-void InitNetwork()
-{
-#ifdef WIN32
-    WSAStartup(MAKEWORD(2, 2), &wsaData);
-#endif
-}
-
 TCPNetwork::TCPNetwork(unsigned int sock) : m_Socket(sock) {}
 
 TCPNetwork &TCPNetwork::operator=(TCPNetwork &&o)
@@ -75,7 +68,6 @@ TCPNetwork::~TCPNetwork() { destroy(); }
 
 TCPServer::TCPServer(uint16_t port)
 {
-    InitNetwork();
     m_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (m_Socket < 0) {
         throw TCPNetworkException(TCPNetworkError::CREATE_SOCKET);
@@ -85,7 +77,7 @@ TCPServer::TCPServer(uint16_t port)
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(port);
-    auto iResult = bind(m_Socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+    int iResult = ::bind(m_Socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
     if (iResult < 0) {
         throw TCPNetworkException(TCPNetworkError::BIND_SOCKET);
     }
@@ -97,7 +89,7 @@ TCPServer::TCPServer(uint16_t port)
 
 std::shared_ptr<TCPNetwork> TCPServer::accept()
 {
-    unsigned int accepted_sock = ::accept(m_Socket, NULL, NULL);
+    int accepted_sock = ::accept(m_Socket, NULL, NULL);
     if (accepted_sock < 0) {
         throw TCPNetworkException(TCPNetworkError::ACCEPTED_SOCKET);
     }
@@ -117,12 +109,12 @@ TCPServer::~TCPServer() { destroy(); }
 
 void TCPClient::cleanup() {}
 
-TCPClient::TCPClient() { InitNetwork(); }
+TCPClient::TCPClient() {}
 
 std::shared_ptr<TCPNetwork> TCPClient::ConnectToHost(const char *host, uint16_t port)
 {
     cleanup();
-    unsigned int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock < 0) {
         throw TCPNetworkException(TCPNetworkError::CREATE_SOCKET);
     }

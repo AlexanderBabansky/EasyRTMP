@@ -1,6 +1,5 @@
 #include <cassert>
 #include "rtmp_server_session.h"
-#include "rtmp_exception.h"
 #include "rtmp_proto.h"
 
 using namespace librtmp;
@@ -179,7 +178,7 @@ void RTMPServerSession::HandleAMF(AMFValue data)
                 m_ClientParameters.video_datarate = obj.at("videodatarate").get_number());
             OPTIONAL_META(m_ClientParameters.framerate = obj.at("framerate").get_number());
             m_ClientParameters.has_video = true;
-        } catch (exception &e) {
+        } catch (exception &) {
             m_ClientParameters.has_video = false;
         }
 
@@ -209,7 +208,7 @@ void RTMPServerSession::HandleAMF(AMFValue data)
                 m_ClientParameters.audio_datarate = obj.at("audiodatarate").get_number());
             OPTIONAL_META(m_ClientParameters.samplesize = obj.at("audiosamplesize").get_number());
             m_ClientParameters.has_audio = true;
-        } catch (exception &e) {
+        } catch (exception &) {
             m_ClientParameters.has_audio = false;
         }
         return;
