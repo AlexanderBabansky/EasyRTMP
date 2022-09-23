@@ -8,7 +8,7 @@ namespace librtmp {
 		ON2_VP6_ALPHA = 5,
 		SCREEN_VIDEO2 = 6,
 		AVC = 7,/**< h264*/
-		HEVC,/**< not part of official specification*/
+		HEVC = 12,/**< not part of official specification, got from Insta360 camera*/
 		UNDEFINED
 	};
 
