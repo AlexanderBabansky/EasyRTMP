@@ -1,0 +1,21 @@
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+
+.commit-template
+
+# Qt Creator
+*.user
+*.user.*
+
+
+# Visual Studio
+.vs
+out
+CMakeSettings.json
+
+debug.log
+.DS_Store
+
+__pycache__
+
+build
