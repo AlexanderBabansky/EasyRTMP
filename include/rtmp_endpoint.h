@@ -61,7 +61,7 @@ private:
     DataLayer *m_LowerLevel = nullptr;
 
     //rtmp session parameters
-    uint32_t m_MaxMessageSize = 1024000;
+    uint32_t m_MaxMessageSize = 5242880;
     unsigned int m_ChunkSizeSend = 128;
     unsigned int m_ChunkSizeReceive = 128;
     std::map<uint8_t, ChunkStream> m_ChunkStreamsInput, m_ChunkStreamsOutput;
