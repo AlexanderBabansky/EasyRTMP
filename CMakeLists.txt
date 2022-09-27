@@ -94,35 +94,6 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/EasyRTMPConfigVersion.cmake
   DESTINATION lib/cmake/easyrtmp
   )
-
-#write_basic_package_version_file(
-#    "${CMAKE_CURRENT_BINARY_DIR}/easyrtmp/EasyRTMPConfigVersion.cmake"
-#    VERSION ${easyrtmp_VERSION}
-#    COMPATIBILITY AnyNewerVersion
-#    )
-
-#export(EXPORT easyrtmp_targets
-#    FILE "${CMAKE_CURRENT_BINARY_DIR}/easyrtmp/EasyRTMPTargets.cmake"
-#    NAMESPACE EasyRTMP::
-#)
-#configure_file(cmake/EasyRTMPConfig.cmake
-#    "${CMAKE_CURRENT_BINARY_DIR}/easyrtmp/EasyRTMPConfig.cmake"
-#    @ONLY
-#)
-
-#set(ConfigPackageLocation lib/cmake/EasyRTMP)
-#install(EXPORT easyrtmp_targets
-#    FILE
-#    EasyRTMPTargets.cmake
-#    NAMESPACE
-#    EasyRTMP::
-#    DESTINATION
-#    ${ConfigPackageLocation}
-#    )
-#install(
-#    FILES
-#    "${CMAKE_CURRENT_BINARY_DIR}/easyrtmp/EasyRTMPConfig.cmake"
-#    "${CMAKE_CURRENT_BINARY_DIR}/easyrtmp/EasyRTMPConfigVersion.cmake"
-#    DESTINATION
-#    ${ConfigPackageLocation}
-#    )
+if ($<$<CONFIG:Debug>:true>)
+    install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION bin)
+endif()

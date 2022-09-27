@@ -115,8 +115,8 @@ DATA_BYTES RTMPEndpoint::GetRTMPMessage(RTMPMessageType *message_type,
         }
 
         if (m_MaxMessageSize < cs.message_length) {
-            assert(false);
-            throw rtmp_exception(RTMPError::INTERNAL);
+            cs.chunks_buffer.resize(cs.message_length);
+            m_MaxMessageSize = cs.message_length;
         }
         auto to_receive_bytes = std::min(cs.message_length - cs.message_bytes_read,
                                          size_t(m_ChunkSizeReceive));
@@ -131,7 +131,10 @@ DATA_BYTES RTMPEndpoint::GetRTMPMessage(RTMPMessageType *message_type,
             *message_type = cs.message_type;
             *timestamp = cs.timestamp;
             *_o_chunk_stream_id = chunk_steam_id;
-            return cs.chunks_buffer;
+            DATA_BYTES data_return;
+            data_return.resize(cs.message_length);
+            memcpy(data_return.data(), cs.chunks_buffer.data(), cs.message_length);
+            return move(data_return);
         }
     } while (true);
 }
