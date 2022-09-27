@@ -10,6 +10,7 @@ enum class RTMPError {
     AMF,
     NETSTREAM_CONNECTION,
     ENDPOINT_STATUS,
+    OUT_OF_BUFFER,
     INTERNAL
 };
 
@@ -30,6 +31,7 @@ public:
         case librtmp::RTMPError::PROTOCOL: return "protocol";
         case librtmp::RTMPError::AMF: return "amf";
         case librtmp::RTMPError::NETSTREAM_CONNECTION: return "netstream connection";
+        case RTMPError::OUT_OF_BUFFER: return "out of buffer";
         case RTMPError::ENDPOINT_STATUS: return "endpoint status";
         case RTMPError::INTERNAL: break;
         }
