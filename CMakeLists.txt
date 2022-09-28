@@ -15,6 +15,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     include/EasyRtmpDLLAPI.h
     framework.cpp include/framework.h
     rtmp_endpoint.cpp include/rtmp_endpoint.h
+    include/rtmp_enums.h
     rtmp_exception.cpp include/rtmp_exception.h
     rtmp_proto.cpp include/rtmp_proto.h
     rtmp_server_session.cpp include/rtmp_server_session.h
