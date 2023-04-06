@@ -52,13 +52,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:include>
 )
 
-if (WIN32)
-    set(LIB_DIRS "lib")
-    set(RUNTIME_DIRS "bin")
-else()
-    set(LIB_DIRS "lib/easyrtmp")
-    set(RUNTIME_DIRS "bin/easyrtmp")
-endif()
+set(LIB_DIRS "lib")
+set(RUNTIME_DIRS "bin")
 
 install(DIRECTORY include/
     DESTINATION include/${PROJECT_NAME}
