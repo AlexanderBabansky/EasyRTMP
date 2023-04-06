@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(easyrtmp_VERSION 0.1)
+set(easyrtmp_VERSION 0.2)
 project(easyrtmp VERSION ${easyrtmp_VERSION})
 
 set(CMAKE_CXX_STANDARD 11)
