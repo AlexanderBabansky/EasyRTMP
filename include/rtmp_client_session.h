@@ -1,3 +1,5 @@
+#pragma once
+
 #include "framework.h"
 #include "rtmp_endpoint.h"
 #include "rtmp_proto.h"
