@@ -3,7 +3,6 @@
 #include "rtmp_exception.h"
 
 using namespace librtmp;
-using namespace std;
 
 #define CHECK_POS(pos, url) (pos != url.npos) ? true : false
 

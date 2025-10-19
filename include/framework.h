@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <cstring>
 #include "EasyRtmpDLLAPI.h"
+#include <cstdint>
 
 #define DATA_BYTES std::vector<char>
 

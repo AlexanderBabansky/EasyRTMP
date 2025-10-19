@@ -26,7 +26,7 @@ bool RTMPClientSession::GetCommandResponse(std::function<bool(AMFValue)> clb, in
                 return clb(amf_container);
             }
         } else
-            m_Endpoint->HandleMessage(move(data), message_type, message_stream_id, message_length,
+            m_Endpoint->HandleMessage(std::move(data), message_type, message_stream_id, message_length,
                                       chunk_stream_id, timestamp);
     }
     return false;

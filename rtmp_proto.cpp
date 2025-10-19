@@ -1,7 +1,6 @@
 #include "rtmp_proto.h"
 #include <stdexcept>
 
-using namespace std;
 using namespace rtmp_proto;
 
 void C0::Serialize(char *&data) const { WriteDataType<uint8_t>(data, d.version); }

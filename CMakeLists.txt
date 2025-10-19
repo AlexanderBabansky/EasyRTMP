@@ -7,8 +7,10 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(USE_OPENSSL "Enable OpenSSL" OFF)
+option(BUILD_SHARED_LIBS "Build shared libs" OFF)
+option(BUILD_WITH_NETWORK "Build with network layers" ON)
 
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
+add_library(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME} PRIVATE
     amf.cpp include/amf.h
@@ -20,12 +22,19 @@ target_sources(${PROJECT_NAME} PRIVATE
     rtmp_proto.cpp include/rtmp_proto.h
     rtmp_server_session.cpp include/rtmp_server_session.h
     rtmp_client_session.cpp include/rtmp_client_session.h
-    utils.cpp include/utils.h
-    data_layers/tcp_network.cpp include/data_layers/tcp_network.h
+    utils.cpp include/utils.h    
     )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE EASYRTMP_DLL_EXPORTS)
-target_compile_definitions(${PROJECT_NAME} PUBLIC EASYRTMP_DLL)
+if (BUILD_WITH_NETWORK)
+    target_sources(${PROJECT_NAME} PRIVATE
+        data_layers/tcp_network.cpp include/data_layers/tcp_network.h
+    )
+    if (WIN32)
+        target_link_libraries(${PROJECT_NAME}
+            Ws2_32.lib
+            )
+    endif()
+endif()
 
 if (${USE_OPENSSL})
     find_package(OpenSSL REQUIRED COMPONENTS SSL)
@@ -36,16 +45,17 @@ if (${USE_OPENSSL})
         data_layers/openssl_tls.cpp include/data_layers/openssl_tls.h
         )
     target_compile_definitions(${PROJECT_NAME} PUBLIC USE_OPENSSL)
+
+    if (WIN32)
+        target_link_libraries(${PROJECT_NAME}
+            Crypt32.lib
+            )
+    endif()
 endif()
-if (WIN32)
-    target_link_libraries(${PROJECT_NAME}
-        Ws2_32.lib
-        Crypt32.lib
-        )
-else()
-    target_link_libraries(${PROJECT_NAME}
-        pthread
-        )
+
+if (BUILD_SHARED_LIBS)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE EASYRTMP_DLL_EXPORTS)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC EASYRTMP_DLL)
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -95,6 +105,3 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/EasyRTMPConfigVersion.cmake
   DESTINATION lib/cmake/easyrtmp
   )
-if ($<$<CONFIG:Debug>:true>)
-    install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION bin)
-endif()

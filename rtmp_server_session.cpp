@@ -3,7 +3,6 @@
 #include "rtmp_proto.h"
 
 using namespace librtmp;
-using namespace std;
 
 #define OPTIONAL_META(arg) \
     try { \
@@ -31,7 +30,7 @@ RTMPMediaMessage RTMPServerSession::GetRTMPMessage()
         case librtmp::RTMPMessageType::METADATA_AMF0: {
             AMFValue root(AMFType::ROOT);
             root.Parse(data.data(), message_length);
-            HandleAMF(move(root));
+            HandleAMF(std::move(root));
         } break;
         case librtmp::RTMPMessageType::AUDIO: {
             RTMPMediaMessage mm;
@@ -62,14 +61,14 @@ ClientParameters *RTMPServerSession::GetClientParameters() { return &m_ClientPar
 void RTMPServerSession::HandleAMF(AMFValue data)
 {
     auto it = data.begin();
-    string cmd_name = (*it).get_string();
+    std::string cmd_name = (*it).get_string();
     ++it;
     int cmd_id = 0;
     if ((*it).GetType() == AMFType::NUMBER) {
         cmd_id = (*it).get_number();
         ++it;
     }
-    list<AMFValue> amf_result;
+    std::list<AMFValue> amf_result;
     if (cmd_name == "connect") {
         auto con_obj = *it;
         m_ClientParameters.app = con_obj.at("app").get_string(); //use app name for logic
@@ -116,7 +115,7 @@ void RTMPServerSession::HandleAMF(AMFValue data)
         }
         amf_result.push_back(obj1);
         amf_result.push_back(obj2);
-        SendAMFResult(move(amf_result), cmd_id);
+        SendAMFResult(std::move(amf_result), cmd_id);
         return;
     } else if (cmd_name == "createStream") {
         AMFValue nll(AMFType::NUL);
@@ -124,7 +123,7 @@ void RTMPServerSession::HandleAMF(AMFValue data)
         num.set_number(1);
         amf_result.push_back(nll);
         amf_result.push_back(num);
-        SendAMFResult(move(amf_result), cmd_id);
+        SendAMFResult(std::move(amf_result), cmd_id);
         return;
     } else if (cmd_name == "publish") {
         ++it;
@@ -178,7 +177,7 @@ void RTMPServerSession::HandleAMF(AMFValue data)
                 m_ClientParameters.video_datarate = obj.at("videodatarate").get_number());
             OPTIONAL_META(m_ClientParameters.framerate = obj.at("framerate").get_number());
             m_ClientParameters.has_video = true;
-        } catch (exception &) {
+        } catch (std::exception &) {
             m_ClientParameters.has_video = false;
         }
 
@@ -208,7 +207,7 @@ void RTMPServerSession::HandleAMF(AMFValue data)
                 m_ClientParameters.audio_datarate = obj.at("audiodatarate").get_number());
             OPTIONAL_META(m_ClientParameters.samplesize = obj.at("audiosamplesize").get_number());
             m_ClientParameters.has_audio = true;
-        } catch (exception &) {
+        } catch (std::exception &) {
             m_ClientParameters.has_audio = false;
         }
         return;

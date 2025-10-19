@@ -1,5 +1,6 @@
 #include <string>
 #include "EasyRtmpDLLAPI.h"
+#include <cstdint>
 
 namespace librtmp {
 enum class ProtoType { RTMP, RTMPS, UNKNOWN = 100 };

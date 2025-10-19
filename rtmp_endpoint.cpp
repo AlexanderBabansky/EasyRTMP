@@ -6,12 +6,11 @@
 
 using namespace rtmp_proto;
 using namespace librtmp;
-using namespace std;
 
 ChunkStream &RTMPEndpoint::GetChunkStreamInput(uint8_t id)
 {
     if (m_ChunkStreamsInput.find(id) == m_ChunkStreamsInput.end()) {
-        m_ChunkStreamsInput.insert(make_pair(id, ChunkStream(m_MaxMessageSize)));
+        m_ChunkStreamsInput.insert(std::make_pair(id, ChunkStream(m_MaxMessageSize)));
     }
     return m_ChunkStreamsInput.at(id);
 }
@@ -134,7 +133,7 @@ DATA_BYTES RTMPEndpoint::GetRTMPMessage(RTMPMessageType *message_type,
             DATA_BYTES data_return;
             data_return.resize(cs.message_length);
             memcpy(data_return.data(), cs.chunks_buffer.data(), cs.message_length);
-            return move(data_return);
+            return std::move(data_return);
         }
     } while (true);
 }
